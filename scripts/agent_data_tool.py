@@ -98,7 +98,7 @@ def _cmd_prediction_markets(args: argparse.Namespace) -> str:
 
 
 def _cmd_verified_snapshot(args: argparse.Namespace) -> str:
-    return get_verified_market_snapshot(args.ticker, args.curr_date, args.look_back_days)
+    return get_verified_market_snapshot.func(args.ticker, args.curr_date, args.look_back_days)
 
 
 def _cmd_reddit(args: argparse.Namespace) -> str:
