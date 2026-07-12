@@ -29,6 +29,20 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+# Load TradingAgents/.env explicitly. tradingagents/__init__.py also calls
+# load_dotenv(find_dotenv(usecwd=True)), but find_dotenv only walks *upward*
+# from the current working directory -- it never finds this .env when the
+# script is invoked from the parent repo root (e.g. `uv run --project
+# TradingAgents python TradingAgents/scripts/agent_data_tool.py ...`), which
+# is exactly the documented invocation pattern. Loading it here by absolute
+# path makes API keys (FRED_API_KEY, etc.) available regardless of cwd.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(_REPO_ROOT / ".env")
+except ImportError:
+    pass
+
 from tradingagents.agents.utils.core_stock_tools import get_stock_data
 from tradingagents.agents.utils.technical_indicators_tools import get_indicators
 from tradingagents.agents.utils.fundamental_data_tools import (
