@@ -220,6 +220,11 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:  # noqa: BLE001 - surface any failure verbatim, never fabricate
         print(f"agent_data_tool.py: {args.subcommand} failed: {exc}", file=sys.stderr)
         return 1
+    # Some vendor adapters encode retrieval failures as strings instead of
+    # raising. Preserve those messages, but do not report a successful command.
+    if isinstance(result, str) and result.startswith(("Error retrieving ", "Error fetching ", "Error: ")):
+        print(f"agent_data_tool.py: {args.subcommand} failed: {result}", file=sys.stderr)
+        return 1
     print(result)
     return 0
 
